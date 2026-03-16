@@ -1,0 +1,2 @@
+# tradelogjournal
+trading journal
