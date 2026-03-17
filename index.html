@@ -200,7 +200,7 @@ const CHART_ANIM = {
 
 // ── 13. Swipe Gesture ─────────────────────────
 (function initSwipe() {
-  const pages = ['home','calendar','log','reports','settings'];
+  const pages = ['home','withdraw','log','strategy','settings'];
   let startX = 0, startY = 0, startTime = 0;
   const scroll = document.getElementById('scroll');
   if (!scroll) return;
@@ -300,6 +300,307 @@ function checkMonthlyConfetti() {
     _oi();
     if (config) setTimeout(checkMonthlyConfetti, 800);
   };
+})();
+
+
+// ══════════════════════════════════════════════
+//  WITHDRAW PAGE
+// ══════════════════════════════════════════════
+let withdrawals = S.get('tl_withdrawals') || []; // [{date, amount, note}]
+
+function getWdPct() {
+  return parseFloat(document.getElementById('wd-pct-input')?.value) || 50;
+}
+
+function getMonthPnl(monthStr) {
+  return trades.filter(t=>t.date.startsWith(monthStr)).reduce((s,t)=>s+t.pnl,0);
+}
+
+function getTotalWithdrawn() {
+  return withdrawals.reduce((s,w)=>s+w.amount,0);
+}
+
+function getThisMonthWithdrawn(monthStr) {
+  return withdrawals.filter(w=>w.date.startsWith(monthStr)).reduce((s,w)=>s+w.amount,0);
+}
+
+function renderWithdraw() {
+  if (!config) return;
+  const st = getStats();
+  const wdPct = getWdPct();
+  const now = new Date();
+  const ms = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+  const monthPnl = getMonthPnl(ms);
+  const totalWd = getTotalWithdrawn();
+  const thisMonthWd = getThisMonthWithdrawn(ms);
+
+  // Monthly withdraw target = wdPct% of monthly target profit
+  const monthlyTargetProfit = st.ctgt * 22;
+  const wdTarget = Math.round(monthlyTargetProfit * wdPct / 100);
+  const wdAvailable = Math.max(0, monthPnl - thisMonthWd);
+  const actualWd = Math.min(wdAvailable, Math.round(monthPnl * wdPct / 100));
+  const pct = wdTarget > 0 ? Math.min(100, monthPnl / wdTarget * 100) : 0;
+  const targetMet = monthPnl >= wdTarget;
+
+  document.getElementById('wd-amount').textContent = fmtV(wdTarget, 0);
+  document.getElementById('wd-sub').textContent = `${wdPct}% of monthly target · ${fmtV(monthlyTargetProfit,0)} target`;
+  document.getElementById('wd-month-pnl').innerHTML = `<span class="${monthPnl>=0?'tp':'tl'}">${monthPnl>=0?'+':''}${fmtV(monthPnl,2)}</span>`;
+  document.getElementById('wd-target-met').innerHTML = targetMet
+    ? '<span style="color:var(--accent)">Yes ✓</span>'
+    : '<span style="color:var(--muted)">Not yet</span>';
+  document.getElementById('wd-total').textContent = fmtV(totalWd, 0);
+  document.getElementById('wd-total2').textContent = fmtV(totalWd, 0);
+  document.getElementById('wd-prog-pct').textContent = pct.toFixed(1)+'%';
+  document.getElementById('wd-prog-fill').style.width = pct+'%';
+
+  // Capital = initial + all trades pnl - all withdrawals
+  const effectiveCap = config.capital + trades.reduce((s,t)=>s+t.pnl,0) - totalWd;
+  document.getElementById('wd-capital').textContent = fmtV(effectiveCap, 0);
+
+  // Button state
+  const btn = document.getElementById('wd-do-btn');
+  const btnAmt = document.getElementById('wd-btn-amount');
+  const btnNote = document.getElementById('wd-btn-note');
+  btnAmt.textContent = fmtV(actualWd, 2);
+  const alreadyWdThisMonth = thisMonthWd > 0;
+
+  if (alreadyWdThisMonth) {
+    btn.disabled = true;
+    btnNote.textContent = `Already withdrawn ${fmtV(thisMonthWd,2)} this month`;
+  } else if (!targetMet) {
+    btn.disabled = true;
+    btnNote.innerHTML = `Target not yet met — need <strong style="color:var(--warn)">${fmtV(wdTarget - monthPnl, 2)}</strong> more profit this month`;
+  } else if (actualWd <= 0) {
+    btn.disabled = true;
+    btnNote.textContent = 'No profit available to withdraw';
+  } else {
+    btn.disabled = false;
+    btnNote.textContent = `${wdPct}% of ${fmtV(monthPnl,2)} monthly profit · remaining ${fmtV(monthPnl - actualWd,2)} stays in account`;
+  }
+
+  // Strategy info
+  document.getElementById('wd-strategy-info').innerHTML =
+    `Withdrawing <strong style="color:var(--warn)">${wdPct}%</strong> of monthly profit each month.<br>` +
+    `Remaining <strong>${100-wdPct}%</strong> stays compounding in account.<br>` +
+    `At current pace: ~${fmtV(Math.round(monthPnl * wdPct/100),2)}/month in withdrawals.`;
+
+  // Log list
+  const logEl = document.getElementById('wd-log-list');
+  if (!withdrawals.length) {
+    logEl.innerHTML = '<div class="empty" style="padding:20px 0"><div class="ei">' +
+      '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>' +
+      '</div>No withdrawals yet</div>';
+  } else {
+    const sorted = [...withdrawals].sort((a,b)=>b.date.localeCompare(a.date));
+    logEl.innerHTML = sorted.map((w,i) => `
+      <div class="wd-log-item">
+        <div>
+          <div class="wld">${w.date} · ${w.note||'Monthly withdraw'}</div>
+          <div style="font-size:.72rem;color:var(--muted);margin-top:2px">${w.pct||50}% of monthly profit</div>
+        </div>
+        <div style="text-align:right">
+          <div class="wlv">${fmtV(w.amount,2)}</div>
+          <button onclick="deleteWithdrawal(${i})" style="font-size:.6rem;color:var(--danger);background:none;border:none;cursor:pointer;margin-top:3px">delete</button>
+        </div>
+      </div>`).join('');
+  }
+}
+
+function doWithdraw() {
+  if (!config) return;
+  const st = getStats();
+  const wdPct = getWdPct();
+  const now = new Date();
+  const ms = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+  const monthPnl = getMonthPnl(ms);
+  const actualWd = Math.round(monthPnl * wdPct / 100);
+  if (actualWd <= 0) { toast('No profit to withdraw'); return; }
+
+  const entry = {
+    date: now.toISOString().split('T')[0],
+    amount: actualWd,
+    pct: wdPct,
+    note: `${ms} — ${wdPct}% monthly`
+  };
+  withdrawals.unshift(entry);
+  S.set('tl_withdrawals', withdrawals);
+  launchConfetti(window.innerWidth/2, window.innerHeight/3, 20);
+  toast('Withdrawn ' + fmtV(actualWd,2) + ' ✓');
+  renderWithdraw();
+}
+
+function deleteWithdrawal(idx) {
+  const sorted = [...withdrawals].sort((a,b)=>b.date.localeCompare(a.date));
+  const entry = sorted[idx];
+  withdrawals = withdrawals.filter(w => !(w.date===entry.date && w.amount===entry.amount));
+  S.set('tl_withdrawals', withdrawals);
+  renderWithdraw();
+}
+
+// ══════════════════════════════════════════════
+//  STRATEGY PAGE
+// ══════════════════════════════════════════════
+function renderStrategy() {
+  if (!config) return;
+  const st = getStats();
+  const wdPct = parseFloat(S.get('tl_wd_pct')) || 50;
+  const TARGET_DAILY = 600;
+  const MONTHS = 24;
+  const DAYS = 22;
+
+  // Update wd pct display
+  document.getElementById('st-wd-pct').textContent = wdPct + '%';
+  document.getElementById('st-cur-tgt').textContent = fmtV(st.ctgt, 2);
+
+  // This month withdraw
+  const now = new Date();
+  const ms = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+  const thisMonthWd = getThisMonthWithdrawn(ms);
+  document.getElementById('st-wd-this').textContent = fmtV(thisMonthWd, 0);
+
+  // Projection table
+  let capC = st.cur; // compound capital (actual current)
+  let capH = st.cur; // hybrid capital
+  let totalWd = getTotalWithdrawn();
+  let prof = st.ctgt;
+  let nextThresh = config.capital + config.levelstep;
+  // Fast-forward threshold to current level
+  while (capC >= nextThresh) nextThresh += config.levelstep;
+
+  const nowM = new Date();
+  let tbody = '';
+  let reachedTarget = false;
+  let targetMonth = null, targetDays = 0;
+
+  for (let m = 1; m <= MONTHS; m++) {
+    const d = new Date(nowM.getFullYear(), nowM.getMonth() + m, 1);
+    const label = d.toLocaleString('en-US',{month:'short',year:'2-digit'});
+    const monthProfit = prof * DAYS;
+
+    // Compound capital: all profit stays
+    capC += monthProfit;
+    if (capC >= nextThresh) {
+      prof = Math.round(prof * (1 + config.levelinc / 100));
+      nextThresh += config.levelstep;
+    }
+
+    // Hybrid capital: only (1-wdPct%) stays
+    const wdAmt = Math.round(monthProfit * wdPct / 100);
+    const reinvest = monthProfit - wdAmt;
+    capH += reinvest;
+    totalWd += wdAmt;
+
+    // Monthly targets
+    const tgtDay = prof;
+    const tgtMonth = prof * DAYS;
+
+    if (!reachedTarget && prof >= TARGET_DAILY) {
+      reachedTarget = true;
+      targetMonth = m;
+      targetDays = m * DAYS;
+    }
+
+    const isCur = m === 1;
+    tbody += `<tr class="${isCur?'cur-row':''}">
+      <td>${label}${isCur?' ◀':''}</td>
+      <td class="tp2">${fmtS(capC)}</td>
+      <td class="tp2">${fmtV(tgtDay,2)}</td>
+      <td>${fmtV(tgtMonth,0)}</td>
+      <td>${fmtS(capH)}</td>
+      <td class="tw">${fmtV(wdAmt,0)}</td>
+      <td class="tw">${fmtS(totalWd)}</td>
+    </tr>`;
+  }
+
+  document.getElementById('strat-tbody').innerHTML = tbody;
+
+  // Estimate cards
+  if (reachedTarget) {
+    document.getElementById('st-est-time').textContent = targetMonth + ' months';
+    document.getElementById('st-est-days').textContent = targetDays + ' trading days';
+  } else {
+    document.getElementById('st-est-time').textContent = '24+ months';
+    document.getElementById('st-est-days').textContent = 'Keep compounding';
+  }
+  document.getElementById('st-cap-need').textContent = fmtV(capC, 0);
+  document.getElementById('st-level-need').textContent = 'If full compound';
+
+  // Roadmap
+  buildRoadmap();
+}
+
+function buildRoadmap() {
+  if (!config) return;
+  const st = getStats();
+  const TARGET = 600;
+  let cap = st.cur, prof = st.ctgt, day = 0, level = 1;
+  let nextT = config.capital + config.levelstep;
+  while (cap >= nextT) nextT += config.levelstep;
+
+  const milestones = [];
+  while (prof < TARGET && day < 5000) {
+    cap += prof; day++;
+    if (cap >= nextT) {
+      level++;
+      prof = Math.round(prof * (1 + config.levelinc/100));
+      if (prof > TARGET) prof = TARGET;
+      milestones.push({level, day, cap:Math.round(cap), prof:Math.round(prof), month:Math.ceil(day/22)});
+      nextT += config.levelstep;
+    }
+  }
+
+  const curCap = st.cur;
+  let html = milestones.map((m,i) => {
+    const done = curCap >= m.cap;
+    const active = !done && (i===0 || curCap >= milestones[i-1]?.cap);
+    const dotCls = done ? 'done' : active ? 'active' : '';
+    const isTarget = m.prof >= TARGET;
+    return `<div class="rm-item">
+      <div class="rm-dot-col">
+        <div class="rm-dot ${isTarget?'target':dotCls}"></div>
+        ${i < milestones.length-1 ? '<div class="rm-line"></div>' : ''}
+      </div>
+      <div class="rm-info" style="padding-bottom:${i<milestones.length-1?'8':'0'}px">
+        <div class="rl">Level ${m.level} · Day +${m.day} · Month +${m.month}</div>
+        <div class="rv" style="color:${isTarget?'var(--warn)':done?'var(--accent)':'var(--text)'}">${fmtV(m.prof,2)}/day ${isTarget?'🏁':done?'✓':''}</div>
+        <div class="rs">Capital needed: ${fmtV(m.cap,0)}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  if (!milestones.length) html = '<div style="font-size:.78rem;color:var(--muted);padding:12px 0">Already at or beyond 600¢/day target!</div>';
+  document.getElementById('roadmap-list').innerHTML = html;
+}
+
+// ══════════════════════════════════════════════
+//  PATCH showPage for new pages
+// ══════════════════════════════════════════════
+const _origShowPage2 = window.showPage;
+window.showPage = function(name) {
+  // Sync wd-pct-input with saved value
+  if (name === 'withdraw') {
+    const savedPct = S.get('tl_wd_pct') || 50;
+    const el = document.getElementById('wd-pct-input');
+    if (el) el.value = savedPct;
+  }
+  _origShowPage2(name);
+  if (name === 'withdraw') renderWithdraw();
+  if (name === 'strategy') renderStrategy();
+};
+
+// Save wd pct on change
+document.addEventListener('change', e => {
+  if (e.target.id === 'wd-pct-input') {
+    S.set('tl_wd_pct', e.target.value);
+    renderWithdraw();
+  }
+});
+
+// Patch swipe for new pages
+(function patchSwipe() {
+  // Redefine pages array in swipe handler by overriding activePage tracking
+  // The swipe handler uses activePage + pages array — we update the array
+  window._swipePages = ['home','withdraw','log','strategy','settings'];
 })();
 
 </script>
@@ -468,6 +769,43 @@ textarea{resize:vertical;min-height:72px}
 .cl-row .ci{font-size:.75rem;opacity:.7}
 .prog-label-row{display:flex;align-items:center;gap:5px}
 .prog-label-row .pi{font-size:.7rem}
+
+
+/* ── Withdraw & Strategy pages ── */
+.wd-hero{background:linear-gradient(135deg,rgba(245,158,11,.08),rgba(59,130,246,.06));border:1px solid rgba(245,158,11,.25);border-radius:18px;padding:18px;margin:8px 16px 14px}
+.wd-hero .whl{font-size:.62rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
+.wd-hero .whv{font-family:var(--fh);font-size:1.8rem;font-weight:800;color:var(--warn);letter-spacing:-.03em}
+.wd-hero .whs{font-size:.7rem;color:var(--muted);margin-top:3px}
+.wd-btn{width:100%;background:linear-gradient(135deg,var(--warn),#f97316);color:#000;font-family:var(--fh);font-weight:700;font-size:.95rem;padding:15px;border:none;border-radius:14px;cursor:pointer;transition:transform .12s,opacity .15s;letter-spacing:.02em;margin-bottom:8px}
+.wd-btn:active{transform:scale(.97)}
+.wd-btn:disabled{opacity:.35;cursor:not-allowed}
+.wd-log-item{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:11px 14px;display:flex;justify-content:space-between;align-items:center;border-left:3px solid var(--warn)}
+.wd-log-item .wld{font-size:.67rem;color:var(--muted)}
+.wd-log-item .wlv{font-family:var(--fh);font-size:1rem;font-weight:700;color:var(--warn)}
+/* Strategy table */
+.strat-table-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--border)}
+.strat-table{width:100%;border-collapse:collapse;font-size:.72rem;min-width:520px}
+.strat-table th{padding:8px 10px;text-align:right;font-size:.6rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;font-weight:500;background:var(--bg3);border-bottom:1px solid var(--border);white-space:nowrap}
+.strat-table th:first-child{text-align:left}
+.strat-table td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--border);color:var(--text)}
+.strat-table td:first-child{text-align:left;font-weight:500;color:var(--muted)}
+.strat-table tr:last-child td{border-bottom:none}
+.strat-table tr.cur-row td{background:rgba(0,229,160,.05)}
+.strat-table tr.cur-row td:first-child{color:var(--accent)}
+.strat-table .tp2{color:var(--accent)}
+.strat-table .tw{color:var(--warn)}
+/* Roadmap */
+.rm-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);align-items:flex-start}
+.rm-item:last-child{border-bottom:none}
+.rm-dot-col{display:flex;flex-direction:column;align-items:center;gap:0;flex-shrink:0}
+.rm-dot{width:12px;height:12px;border-radius:50%;background:var(--bg3);border:2px solid var(--border2);margin-top:3px;flex-shrink:0}
+.rm-dot.done{background:var(--accent);border-color:var(--accent)}
+.rm-dot.active{background:var(--accent2);border-color:var(--accent2);box-shadow:0 0 0 3px rgba(59,130,246,.2)}
+.rm-dot.target{background:var(--warn);border-color:var(--warn)}
+.rm-line{width:2px;flex:1;background:var(--border);min-height:20px;margin-top:2px}
+.rm-info .rl{font-size:.65rem;color:var(--muted)}
+.rm-info .rv{font-size:.85rem;font-weight:600;margin-top:1px}
+.rm-info .rs{font-size:.65rem;color:var(--muted);margin-top:2px}
 
 /* ═══ ANIMATIONS ═══ */
 
@@ -657,6 +995,12 @@ textarea{resize:vertical;min-height:72px}
   <!-- CALENDAR -->
   <div class="page" id="page-calendar">
     <div class="sec" style="padding-top:8px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <button onclick="showPage('settings')" style="background:none;border:1px solid var(--border2);border-radius:8px;color:var(--muted);font-family:var(--fm);font-size:.72rem;padding:5px 10px;cursor:pointer;display:flex;align-items:center;gap:5px">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg> Back
+        </button>
+        <span style="font-size:.72rem;color:var(--muted)">Calendar style="font-size:.72rem;color:var(--muted)" id="cal-back-title"></span>
+      </div>
       <div class="cal-wrap">
         <div class="cal-hdr">
           <button class="cal-nav" id="cal-prev">‹</button>
@@ -720,6 +1064,12 @@ textarea{resize:vertical;min-height:72px}
   <!-- JOURNAL -->
   <div class="page" id="page-journal">
     <div class="sec" style="padding-top:8px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <button onclick="showPage('settings')" style="background:none;border:1px solid var(--border2);border-radius:8px;color:var(--muted);font-family:var(--fm);font-size:.72rem;padding:5px 10px;cursor:pointer;display:flex;align-items:center;gap:5px">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg> Back
+        </button>
+        <span style="font-size:.72rem;color:var(--muted)">Journal</span>
+      </div>
       <div style="display:flex;gap:8px;margin-bottom:12px">
         <select id="j-mo" onchange="renderJournal()" style="flex:1;font-size:.78rem;padding:8px 10px">
           <option value="">All months</option>
@@ -735,6 +1085,12 @@ textarea{resize:vertical;min-height:72px}
   <!-- REPORTS -->
   <div class="page" id="page-reports">
     <div class="sec" style="padding-top:8px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <button onclick="showPage('settings')" style="background:none;border:1px solid var(--border2);border-radius:8px;color:var(--muted);font-family:var(--fm);font-size:.72rem;padding:5px 10px;cursor:pointer;display:flex;align-items:center;gap:5px">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg> Back
+        </button>
+        <span style="font-size:.72rem;color:var(--muted)">Reports</span>
+      </div>
       <div style="display:flex;gap:8px;margin-bottom:14px;align-items:center">
         <select id="r-period" onchange="buildReport(this.value)" style="flex:1;font-size:.78rem;padding:8px 10px">
           <option value="">All time</option>
@@ -764,6 +1120,24 @@ textarea{resize:vertical;min-height:72px}
   <!-- SETTINGS -->
   <div class="page" id="page-settings">
     <div class="sec" style="padding-top:8px">
+
+      <!-- Quick access to hidden pages -->
+      <div class="sh" style="background:var(--bg3);border-radius:12px 12px 0 0;padding:10px 14px;font-size:.62rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--border);border-bottom:none">Quick Access</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;background:var(--bg2);border:1px solid var(--border);border-radius:0 0 12px 12px;overflow:hidden;margin-bottom:14px">
+        <button onclick="showPage('calendar')" style="background:none;border:none;border-right:1px solid var(--border);color:var(--text);font-family:var(--fm);font-size:.72rem;padding:13px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;transition:background .15s" onmousedown="this.style.background='var(--bg3)'" onmouseup="this.style.background=''" ontouchstart="this.style.background='var(--bg3)'" ontouchend="this.style.background=''">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Calendar
+        </button>
+        <button onclick="showPage('reports')" style="background:none;border:none;border-right:1px solid var(--border);color:var(--text);font-family:var(--fm);font-size:.72rem;padding:13px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;transition:background .15s" onmousedown="this.style.background='var(--bg3)'" onmouseup="this.style.background=''" ontouchstart="this.style.background='var(--bg3)'" ontouchend="this.style.background=''">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          Reports
+        </button>
+        <button onclick="showPage('journal')" style="background:none;border:none;color:var(--text);font-family:var(--fm);font-size:.72rem;padding:13px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;transition:background .15s" onmousedown="this.style.background='var(--bg3)'" onmouseup="this.style.background=''" ontouchstart="this.style.background='var(--bg3)'" ontouchend="this.style.background=''">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          Journal
+        </button>
+      </div>
+
       <div class="ss">
         <div class="sh"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> Display Currency</div>
         <div class="cg">
@@ -791,15 +1165,147 @@ textarea{resize:vertical;min-height:72px}
     </div>
   </div>
 
+
+  <!-- WITHDRAW -->
+  <div class="page" id="page-withdraw">
+    <div class="sec" style="padding-top:8px">
+      <!-- Withdraw Hero -->
+      <div class="wd-hero">
+        <div class="whl"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Monthly Withdraw Target</div>
+        <div class="whv" id="wd-amount">—</div>
+        <div class="whs" id="wd-sub">Based on current strategy</div>
+      </div>
+
+      <!-- Status cards -->
+      <div class="g3" style="margin-bottom:12px">
+        <div class="card">
+          <div class="cl">This Month P&L</div>
+          <div class="cv" id="wd-month-pnl" style="font-size:1rem">—</div>
+        </div>
+        <div class="card">
+          <div class="cl">Target Met</div>
+          <div class="cv" id="wd-target-met" style="font-size:1rem">—</div>
+        </div>
+        <div class="card">
+          <div class="cl">Total WD</div>
+          <div class="cv" style="color:var(--warn);font-size:1rem" id="wd-total">—</div>
+        </div>
+      </div>
+
+      <!-- Progress bar -->
+      <div class="prog" style="margin-bottom:16px">
+        <div class="pr">
+          <span style="color:var(--muted);font-size:.7rem">Monthly profit vs withdraw target</span>
+          <span style="color:var(--warn);font-weight:500;font-size:.7rem" id="wd-prog-pct">0%</span>
+        </div>
+        <div class="pb"><div class="pf" id="wd-prog-fill" style="width:0%;background:linear-gradient(90deg,var(--warn),#f97316)"></div></div>
+      </div>
+
+      <!-- Withdraw button -->
+      <button class="wd-btn" id="wd-do-btn" onclick="doWithdraw()">
+        Withdraw — <span id="wd-btn-amount">—</span>
+      </button>
+      <div id="wd-btn-note" style="font-size:.7rem;color:var(--muted);text-align:center;margin-bottom:16px;line-height:1.6">—</div>
+
+      <!-- Strategy settings -->
+      <div class="card" style="margin-bottom:14px">
+        <div class="stitle" style="margin-bottom:10px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg> Withdraw Strategy</div>
+        <div class="fg" style="margin-bottom:10px">
+          <label>Withdraw % of monthly profit</label>
+          <input type="number" id="wd-pct-input" placeholder="50" min="1" max="90" value="50" inputmode="decimal" onchange="renderWithdraw()">
+        </div>
+        <div style="font-size:.7rem;color:var(--muted);line-height:1.7" id="wd-strategy-info">—</div>
+      </div>
+
+      <!-- All-time summary -->
+      <div class="g2" style="margin-bottom:14px">
+        <div class="card">
+          <div class="cl">Capital (after WD)</div>
+          <div class="cv accent" id="wd-capital">—</div>
+        </div>
+        <div class="card">
+          <div class="cl">Total Withdrawn</div>
+          <div class="cv" style="color:var(--warn)" id="wd-total2">—</div>
+        </div>
+      </div>
+
+      <!-- Withdraw log -->
+      <div class="stitle"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Withdraw History</div>
+      <div style="display:flex;flex-direction:column;gap:8px" id="wd-log-list">
+        <div class="empty"><div class="ei"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>No withdrawals yet</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STRATEGY -->
+  <div class="page" id="page-strategy">
+    <div class="sec" style="padding-top:8px">
+
+      <!-- Estimate cards -->
+      <div class="g2" style="margin-bottom:12px">
+        <div class="card ac">
+          <div class="cl">Est. reach 600¢/day</div>
+          <div class="cv accent" style="font-size:1rem" id="st-est-time">—</div>
+          <div class="cs" id="st-est-days">—</div>
+        </div>
+        <div class="card">
+          <div class="cl">Capital needed</div>
+          <div class="cv" style="font-size:1rem" id="st-cap-need">—</div>
+          <div class="cs" id="st-level-need">—</div>
+        </div>
+      </div>
+      <div class="g3" style="margin-bottom:14px">
+        <div class="card">
+          <div class="cl">Current Target/day</div>
+          <div class="cv" style="font-size:.95rem;color:var(--accent2)" id="st-cur-tgt">—</div>
+        </div>
+        <div class="card">
+          <div class="cl">Withdraw %</div>
+          <div class="cv" style="font-size:.95rem;color:var(--warn)" id="st-wd-pct">—</div>
+        </div>
+        <div class="card">
+          <div class="cl">WD this month</div>
+          <div class="cv" style="font-size:.95rem;color:var(--warn)" id="st-wd-this">—</div>
+        </div>
+      </div>
+
+      <!-- Projection table -->
+      <div class="stitle"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Monthly Projection Table</div>
+      <div class="strat-table-wrap" style="margin-bottom:16px">
+        <table class="strat-table" id="strat-table">
+          <thead>
+            <tr>
+              <th style="text-align:left">Month</th>
+              <th>Compound Cap</th>
+              <th>Target/day</th>
+              <th>Target/mo</th>
+              <th>Hybrid Cap</th>
+              <th>Withdraw</th>
+              <th>Total WD</th>
+            </tr>
+          </thead>
+          <tbody id="strat-tbody"></tbody>
+        </table>
+      </div>
+
+      <!-- Roadmap -->
+      <div class="stitle"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg> Roadmap to 600¢/day</div>
+      <div class="card" style="margin-bottom:14px">
+        <div id="roadmap-list"></div>
+      </div>
+
+    </div>
+  </div>
+
 </div><!-- end scroll -->
 
 <!-- BOTTOM NAV -->
-<nav class="bnav">
-  <button class="ni active" id="nav-home"     onclick="showPage('home')"><div class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>Home</button>
-  <button class="ni"        id="nav-calendar" onclick="showPage('calendar')"><div class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>Calendar</button>
+<nav class="bnav" style="justify-content:space-around">
+  <button class="ni active" id="nav-home"     onclick="showPage('home')"><div class="ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>Home</button>
+  <button class="ni"        id="nav-withdraw" onclick="showPage('withdraw')"><div class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>Withdraw</button>
   <button class="ni center" id="nav-log"      onclick="showPage('log')"><div class="ico" style="font-size:1.5rem;color:var(--accent)">⊕</div>Log</button>
-  <button class="ni"        id="nav-reports"  onclick="showPage('reports')"><div class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>Reports</button>
-  <button class="ni"        id="nav-settings" onclick="showPage('settings')"><div class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg></div>More</button>
+  <button class="ni"        id="nav-strategy" onclick="showPage('strategy')"><div class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>Strategy</button>
+  <button class="ni"        id="nav-settings" onclick="showPage('settings')"><div class="ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg></div>More</button>
 </nav>
 
 </div><!-- end app -->
