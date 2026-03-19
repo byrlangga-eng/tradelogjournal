@@ -200,7 +200,7 @@ const CHART_ANIM = {
 
 // ── 13. Swipe Gesture ─────────────────────────
 (function initSwipe() {
-  const pages = ['home','calendar','log','strategy','settings'];
+  const pages = ['home','calendar','strategy','reports','settings'];
   let startX = 0, startY = 0, startTime = 0;
   const scroll = document.getElementById('scroll');
   if (!scroll) return;
@@ -310,9 +310,9 @@ function checkMonthlyConfetti() {
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:var(--fm);font-size:14px}
 #app{display:flex;flex-direction:column;height:100%;max-width:430px;margin:0 auto;background:var(--bg);box-shadow:0 0 80px rgba(0,0,0,.7)}
-.scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--nav-h) + var(--sb) + 16px)}
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--nav-h) + var(--sb) + 80px)}
 .scroll::-webkit-scrollbar{display:none}
-.page{display:none;animation:fu .2s ease;position:relative}
+.page{display:none;animation:fu .2s ease}
 .page.active{display:block}
 @keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:calc(12px + var(--st)) 16px 10px;background:var(--bg);position:sticky;top:0;z-index:50;border-bottom:1px solid var(--border)}
@@ -322,8 +322,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .t-pills{display:flex;gap:3px;background:var(--bg3);border-radius:20px;padding:3px}
 .t-pills button{background:none;border:none;color:var(--muted);font-family:var(--fm);font-size:.68rem;padding:3px 9px;border-radius:14px;cursor:pointer;transition:all .15s}
 .t-pills button.active{background:rgba(0,229,160,.15);color:var(--accent)}
-.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--bg2);border-top:1px solid var(--border);display:flex;height:calc(var(--nav-h) + var(--sb));padding-bottom:var(--sb);z-index:100}
-.ni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:none;border:none;color:var(--muted);font-family:var(--fm);font-size:.58rem;cursor:pointer;padding:8px 0;transition:color .15s,transform .15s;letter-spacing:.03em;text-transform:uppercase}
+.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--bg2);border-top:1px solid var(--border);display:flex;height:calc(var(--nav-h) + var(--sb));padding-bottom:var(--sb);z-index:100;justify-content:space-around}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:none;border:none;color:var(--muted);font-family:var(--fm);font-size:.6rem;cursor:pointer;padding:8px 4px;transition:color .15s,transform .15s;letter-spacing:.02em;text-transform:uppercase;min-width:0}
 .ni.active{color:var(--accent)}
 .ni .ico{font-size:1.1rem;line-height:1}
 .ni.center .ico{font-size:1.6rem;color:var(--accent)}
@@ -367,7 +367,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--accent)}
 textarea{resize:vertical;min-height:72px}
 .btn{width:100%;background:var(--accent);color:#000;font-family:var(--fh);font-weight:700;font-size:.85rem;padding:13px;border:none;border-radius:12px;cursor:pointer;letter-spacing:.02em;transition:opacity .15s,transform .12s cubic-bezier(.34,1.56,.64,1)}
 .btn:active{transform:scale(.96);opacity:.88}
-.btn-g{background:var(--bg3);color:var(--text);border:1px solid var(--border2)}
+.btn-g{background:var(--bg3);color:var(--text);border:1px solid var(--border2)}body.light .btn-g{background:#e8e8e2;color:#1a1a1a;border-color:rgba(0,0,0,.15)}body.light .btn{color:#000}body.light .ni{color:#666}body.light .ni.active{color:var(--accent)}body.light input,body.light textarea,body.light select{background:#f0efe9;color:#1a1a1a;border-color:rgba(0,0,0,.15)}body.light .card{background:#fff;border-color:rgba(0,0,0,.08)}body.light .hero{background:#fff;border-color:rgba(0,180,100,.2)}body.light .topbar{background:#f5f5f0;border-color:rgba(0,0,0,.08)}body.light .bnav{background:#fff;border-color:rgba(0,0,0,.08)}body.light .cc{background:#fff;border-color:rgba(0,0,0,.08)}body.light .rc{background:#fff}body.light .ss{background:#fff}body.light .bg3{background:#e8e8e2}
 .btn-d{background:rgba(255,69,96,.1);color:var(--danger);border:1px solid rgba(255,69,96,.3)}
 .btn-sm{padding:8px 14px;width:auto;font-size:.75rem;border-radius:9px}
 .brow{display:flex;gap:8px}
@@ -449,7 +449,7 @@ textarea{resize:vertical;min-height:72px}
 .wd-hero .whl{font-size:.62rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;display:flex;align-items:center;gap:5px}
 .wd-hero .whv{font-family:var(--fh);font-size:1.8rem;font-weight:800;color:var(--warn);letter-spacing:-.03em}
 .wd-hero .whs{font-size:.7rem;color:var(--muted);margin-top:3px}
-.wd-btn{width:100%;background:linear-gradient(135deg,var(--warn),#f97316);color:#000;font-family:var(--fh);font-weight:700;font-size:.95rem;padding:15px;border:none;border-radius:14px;cursor:pointer;transition:transform .12s,opacity .15s;letter-spacing:.02em;margin-bottom:8px}
+.wd-btn{width:100%;background:linear-gradient(135deg,var(--warn),#f97316);color:#000;font-family:var(--fh);font-weight:700;font-family:var(--fh);font-weight:700;font-size:.95rem;padding:15px;border:none;border-radius:14px;cursor:pointer;transition:transform .12s,opacity .15s;letter-spacing:.02em;margin-bottom:8px}
 .wd-btn:active{transform:scale(.97)}
 .wd-btn:disabled{opacity:.35;cursor:not-allowed}
 .wd-log-item{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:11px 14px;display:flex;justify-content:space-between;align-items:center;border-left:3px solid var(--warn)}
@@ -598,6 +598,22 @@ input.ok{border-color:var(--accent) !important}
 
 /* Chart tooltip */
 .chart-tooltip{position:absolute;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:8px 12px;font-size:.72rem;pointer-events:none;z-index:10;white-space:nowrap;min-width:120px;box-shadow:0 4px 20px rgba(0,0,0,.3)}
+
+/* ── Share Bottom Sheet ── */
+.share-sheet{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;backdrop-filter:blur(4px);align-items:flex-end}
+.share-sheet.open{display:flex}
+.share-box{background:var(--bg2);border-radius:20px 20px 0 0;padding:20px 18px calc(20px + var(--sb));width:100%;max-width:430px;margin:0 auto;animation:modalSpring .3s cubic-bezier(.34,1.28,.64,1);display:flex;flex-direction:column;gap:16px}
+.share-title-row{display:flex;justify-content:space-between;align-items:center}
+.share-title{font-family:var(--fh);font-size:1.1rem;font-weight:700;color:var(--text)}
+.share-close{background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;padding:0 4px}
+.share-card-preview{background:var(--bg3);border-radius:12px;padding:12px;display:flex;justify-content:center}
+.share-canvas-inner{max-width:100%;height:auto;border-radius:8px;box-shadow:0 4px 15px rgba(0,0,0,.15)}
+.share-actions{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.share-action-btn{background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:12px;display:flex;align-items:center;gap:12px;text-align:left;cursor:pointer;color:var(--text);transition:transform .1s;font-family:var(--fm)}
+.share-action-btn:active{transform:scale(.96);background:var(--bg2)}
+.sa-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sa-label{font-family:var(--fh);font-size:.85rem;font-weight:700;margin-bottom:2px}
+.sa-sub{font-size:.65rem;color:var(--muted)}
 
 </style>
 <link rel="manifest" href="data:application/json,{%22name%22:%22TradeLog%22,%22short_name%22:%22TradeLog%22,%22start_url%22:%22/%22,%22display%22:%22standalone%22,%22background_color%22:%22%230a0b0e%22,%22theme_color%22:%22%2300e5a0%22}">
@@ -762,7 +778,11 @@ input.ok{border-color:var(--accent) !important}
 
   <!-- HOME -->
   <div class="page" id="page-home">
-    <div class="hero">
+    <div class="hero" style="position:relative">
+      <button onclick="shareSummary()" style="position:absolute;top:12px;right:12px;background:rgba(0,229,160,.1);border:1px solid rgba(0,229,160,.2);border-radius:16px;color:var(--accent);font-family:var(--fm);font-size:.62rem;padding:4px 10px;cursor:pointer;display:flex;align-items:center;gap:4px;z-index:2">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+        Share
+      </button>
       <div class="hl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M12 6v6l4 2"/></svg> Current Capital</div>
       <div class="hv" id="h-cap">—</div>
       <div class="hs" id="h-growth">—</div>
@@ -773,6 +793,39 @@ input.ok{border-color:var(--accent) !important}
         <div class="hs2"><div class="sl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> Win%</div><div class="sv" style="color:var(--accent2)" id="h-wr">—</div></div>
       </div>
     </div>
+    <!-- Level Badge -->
+    <!-- Streak -->
+    <div style="padding:0 16px;margin-bottom:10px">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:10px 14px">
+        <div style="font-size:.6rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:4px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c0 6-6 8-6 14a6 6 0 0 0 12 0c0-6-6-8-6-14z"/></svg> Streak — last 30 days</div>
+        <div class="sdots" id="h-sdots"></div>
+      </div>
+    </div>
+    <div id="level-badge-wrap" style="padding:0 16px;margin-bottom:10px">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div id="level-icon" style="width:36px;height:36px;border-radius:10px;background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.25);display:flex;align-items:center;justify-content:center;font-family:var(--fh);font-weight:800;font-size:.9rem;color:var(--accent2)">L1</div>
+          <div>
+            <div style="font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Current Level</div>
+            <div style="font-family:var(--fh);font-weight:700;font-size:.85rem" id="level-desc">Level 1 — Starter</div>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:.6rem;color:var(--muted)">Next level in</div>
+          <div style="font-family:var(--fh);font-weight:700;font-size:.82rem;color:var(--accent2)" id="level-next">—</div>
+        </div>
+      </div>
+      <!-- Level progress -->
+      <div style="margin-top:6px">
+        <div style="display:flex;justify-content:space-between;font-size:.6rem;color:var(--muted);margin-bottom:3px">
+          <span id="level-cur-cap">—</span>
+          <span id="level-next-cap">—</span>
+        </div>
+        <div style="height:3px;background:var(--bg3);border-radius:2px;overflow:hidden">
+          <div id="level-prog-fill" style="height:100%;border-radius:2px;background:linear-gradient(90deg,var(--accent2),var(--accent));transition:width .7s cubic-bezier(.34,1.1,.64,1);width:0%"></div>
+        </div>
+      </div>
+    </div>
     <!-- Today Banner -->
     <div id="today-banner-home" class="today-banner not-logged sec" style="margin:0 0 0 0;border-radius:14px">
       <div>
@@ -780,6 +833,17 @@ input.ok{border-color:var(--accent) !important}
         <div style="font-family:var(--fh);font-weight:700;font-size:.95rem" id="tb-status">No entry yet — tap Log to record</div>
       </div>
       <button onclick="showPage('log')" id="tb-action" style="background:var(--warn);color:#000;border:none;font-family:var(--fh);font-weight:700;font-size:.72rem;padding:6px 12px;border-radius:8px;cursor:pointer;flex-shrink:0">+ Log</button>
+    </div>
+    <!-- MC + TopUp row -->
+    <div style="display:flex;gap:8px;padding:0 16px;margin-bottom:10px">
+      <button onclick="showMCConfirm()" style="flex:1;background:rgba(255,69,96,.1);border:1px solid rgba(255,69,96,.3);border-radius:10px;color:var(--danger);font-family:var(--fh);font-weight:700;font-size:.75rem;padding:10px 6px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Margin Call
+      </button>
+      <button onclick="showTopUp()" style="flex:1;background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.3);border-radius:10px;color:var(--accent2);font-family:var(--fh);font-weight:700;font-size:.75rem;padding:10px 6px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Top Up
+      </button>
     </div>
     <div class="sec">
       <div class="prog">
@@ -811,9 +875,9 @@ input.ok{border-color:var(--accent) !important}
           <div class="cl-row"><span class="ci"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></span><span class="cl" style="margin-bottom:0">Total P&L</span></div>
           <div class="cv" style="color:var(--accent)" id="h-tpnl">—</div>
         </div>
-        <div class="card dn">
-          <div class="cl-row"><span class="ci"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></svg></span><span class="cl" style="margin-bottom:0">Max DD</span></div>
-          <div class="cv" style="color:var(--danger)" id="h-mdd">—</div>
+        <div class="card ac">
+          <div class="cl-row"><span class="ci"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></span><span class="cl" style="margin-bottom:0">P&L Growth</span></div>
+          <div class="cv" style="color:var(--accent)" id="h-pnlpct">—</div>
         </div>
       </div>
       <div class="g2">
@@ -821,9 +885,10 @@ input.ok{border-color:var(--accent) !important}
           <div class="cl-row"><span class="ci"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><polyline points="20 6 9 17 4 12"/></svg></span><span class="cl" style="margin-bottom:0">Avg Win</span></div>
           <div class="cv" id="h-aw">—</div>
         </div>
-        <div class="card">
+        <div class="card dn">
           <div class="cl-row"><span class="ci"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span><span class="cl" style="margin-bottom:0">Avg Loss</span></div>
           <div class="cv" style="color:var(--danger)" id="h-al">—</div>
+          <div style="font-size:.62rem;color:var(--muted);margin-top:2px" id="h-al-pct">—</div>
         </div>
       </div>
     </div>
@@ -871,10 +936,6 @@ input.ok{border-color:var(--accent) !important}
           </div>
         </div>
       </div>
-    </div>
-    <div class="sec">
-      <div class="stitle"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><path d="M12 2c0 6-6 8-6 14a6 6 0 0 0 12 0c0-6-6-8-6-14z"/><path d="M12 12c0 3-2 4-2 7a2 2 0 0 0 4 0c0-3-2-4-2-7z"/></svg> Streak — last 30 days</div>
-      <div class="sdots" id="h-sdots"></div>
     </div>
   </div>
 
@@ -986,7 +1047,7 @@ input.ok{border-color:var(--accent) !important}
           <option value="">All time</option>
         </select>
         <button class="btn btn-g btn-sm" onclick="printReport()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> Print</button>
-        <button class="btn btn-sm" style="width:auto;padding:8px 14px;font-size:.75rem" onclick="shareReport()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> Share</button>
+        <button onclick="captureReport()" style="background:none;border:1px solid var(--border2);border-radius:20px;color:var(--muted);font-family:var(--fm);font-size:.68rem;padding:5px 12px;cursor:pointer;display:flex;align-items:center;gap:5px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> Share</button>
       </div>
       <div id="r-content"></div>
 
@@ -1013,32 +1074,16 @@ input.ok{border-color:var(--accent) !important}
 
       <!-- Quick access to hidden pages -->
       <div class="sh" style="background:var(--bg3);border-radius:12px 12px 0 0;padding:10px 14px;font-size:.62rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--border);border-bottom:none">Quick Access</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;background:var(--bg2);border:1px solid var(--border);border-radius:0 0 12px 12px;overflow:hidden;margin-bottom:14px">
-        <button onclick="showPage('withdraw')" style="background:none;border:none;border-right:1px solid var(--border);color:var(--text);font-family:var(--fm);font-size:.72rem;padding:13px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px" ontouchstart="this.style.background='var(--bg3)'" ontouchend="this.style.background=''">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;background:var(--bg2);border:1px solid var(--border);border-radius:0 0 12px 12px;overflow:hidden;margin-bottom:14px">
+        <button onclick="showPage('withdraw')" style="background:none;border:none;border-right:1px solid var(--border);color:var(--text);font-family:var(--fm);font-size:.72rem;padding:14px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px" ontouchstart="this.style.background='var(--bg3)'" ontouchend="this.style.background=''">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           Withdraw
         </button>
-        <button onclick="showPage('reports')" style="background:none;border:none;border-right:1px solid var(--border);color:var(--text);font-family:var(--fm);font-size:.72rem;padding:13px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;transition:background .15s" onmousedown="this.style.background='var(--bg3)'" onmouseup="this.style.background=''" ontouchstart="this.style.background='var(--bg3)'" ontouchend="this.style.background=''">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-          Reports
-        </button>
-        <button onclick="showPage('journal')" style="background:none;border:none;color:var(--text);font-family:var(--fm);font-size:.72rem;padding:13px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;transition:background .15s" onmousedown="this.style.background='var(--bg3)'" onmouseup="this.style.background=''" ontouchstart="this.style.background='var(--bg3)'" ontouchend="this.style.background=''">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        <button onclick="showPage('journal')" style="background:none;border:none;color:var(--text);font-family:var(--fm);font-size:.72rem;padding:14px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px" ontouchstart="this.style.background='var(--bg3)'" ontouchend="this.style.background=''">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
           Journal
         </button>
       </div>
-
-      <div class="ss">
-        <div class="sh"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> Display Currency</div>
-        <div class="cg">
-          <button class="cb active" data-cur="cent" onclick="setCurrency('cent')"><span class="cs2">¢</span>Cent</button>
-          <button class="cb" data-cur="usd"  onclick="setCurrency('usd')"><span class="cs2">$</span>USD</button>
-          <button class="cb" data-cur="idr"  onclick="setCurrency('idr')"><span class="cs2">Rp</span>IDR</button>
-          <button class="cb" data-cur="raw"  onclick="setCurrency('raw')"><span class="cs2">#</span>Raw</button>
-        </div>
-        <div id="idr-row" style="display:none;padding:0 16px 12px">
-          <div class="fg" style="margin:0"><label><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3H8l-2 4h12z"/></svg> IDR rate per 1 cent</label><input type="number" id="idr-rate" placeholder="160" inputmode="decimal"></div>
-        </div>
         <div style="padding:0 16px 12px;font-size:.7rem;color:var(--muted)" id="cur-prev"></div>
       </div>
       <div class="ss">
@@ -1169,7 +1214,7 @@ input.ok{border-color:var(--accent) !important}
 
   <!-- STRATEGY -->
   <div class="page" id="page-strategy">
-    <div class="sec" style="padding-top:8px">
+    <div class="sec" style="padding-top:6px">
 
       <!-- Estimate cards -->
       <div class="g2" style="margin-bottom:12px">
@@ -1230,12 +1275,17 @@ input.ok{border-color:var(--accent) !important}
 </div><!-- end scroll -->
 
 <!-- BOTTOM NAV -->
-<nav class="bnav" style="justify-content:space-around">
-  <button class="ni active" id="nav-home"     onclick="showPage('home')"><div class="ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>Home</button>
-  <button class="ni"        id="nav-calendar" onclick="showPage('calendar')"><div class="ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>Calendar</button>
-  <button class="ni center" id="nav-log"      onclick="showPage('log')"><div class="ico" style="font-size:1.5rem;color:var(--accent)">⊕</div>Log</button>
-  <button class="ni"        id="nav-strategy" onclick="showPage('strategy')"><div class="ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>Strategy</button>
-  <button class="ni"        id="nav-settings" onclick="showPage('settings')"><div class="ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg></div>More</button>
+<!-- FAB Log Button -->
+<button id="fab-log" onclick="showPage('log')" style="position:fixed;bottom:calc(var(--nav-h) + var(--sb) + 12px);left:50%;transform:translateX(-50%);width:56px;height:56px;border-radius:28px;background:var(--accent);border:none;cursor:pointer;z-index:150;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,229,160,.4);transition:transform .15s cubic-bezier(.34,1.56,.64,1),box-shadow .15s" onmousedown="this.style.transform='translateX(-50%) scale(.9)'" onmouseup="this.style.transform='translateX(-50%) scale(1)'" ontouchstart="this.style.transform='translateX(-50%) scale(.9)';this.style.boxShadow='0 2px 10px rgba(0,229,160,.3)'" ontouchend="this.style.transform='translateX(-50%) scale(1)';this.style.boxShadow='0 4px 20px rgba(0,229,160,.4)'">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+</button>
+
+<nav class="bnav">
+  <button class="ni active" id="nav-home"     onclick="showPage('home')"><div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>Home</button>
+  <button class="ni"        id="nav-calendar" onclick="showPage('calendar')"><div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>Calendar</button>
+  <button class="ni"        id="nav-strategy" onclick="showPage('strategy')"><div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>Strategy</button>
+  <button class="ni"        id="nav-reports"  onclick="showPage('reports')"><div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>Reports</button>
+  <button class="ni"        id="nav-settings" onclick="showPage('settings')"><div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg></div>More</button>
 </nav>
 
 
@@ -1260,6 +1310,125 @@ input.ok{border-color:var(--accent) !important}
   </div>
 </div>
 
+
+<!-- SHARE PREVIEW MODAL -->
+<div class="share-preview-overlay" id="share-preview-overlay" onclick="if(event.target===this)closeSharePreview()">
+  <div class="share-preview-box">
+    <div class="mh"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div style="font-family:var(--fh);font-weight:700;font-size:.95rem" id="share-preview-title">Preview</div>
+      <button onclick="closeSharePreview()" style="background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer">✕</button>
+    </div>
+    <div class="preview-canvas-wrap" id="preview-canvas-wrap">
+      <div id="preview-canvas-placeholder" style="width:100%;aspect-ratio:9/16;background:var(--bg3);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.75rem">Generating...</div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-g" style="flex:1" onclick="closeSharePreview()">Cancel</button>
+      <button class="btn" style="flex:2;background:var(--accent2);color:#fff" onclick="doShareImage()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:5px"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+        Share / Download
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<!-- SHARE BOTTOM SHEET -->
+<div class="share-sheet" id="share-sheet" onclick="if(event.target===this)closeShareSheet()">
+  <div class="share-box">
+    <div class="share-title-row">
+      <div class="share-title" id="share-sheet-title">Share Summary</div>
+      <button class="share-close" onclick="closeShareSheet()">✕</button>
+    </div>
+    <!-- Card preview -->
+    <div class="share-card-preview">
+      <canvas id="share-preview-canvas" class="share-canvas-inner"></canvas>
+    </div>
+    <!-- Action buttons -->
+    <div class="share-actions">
+      <button class="share-action-btn" onclick="shareAction('copy')">
+        <div class="sa-icon" style="background:rgba(107,114,128,.15)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        </div>
+        <div><div class="sa-label">Copy Text</div><div class="sa-sub">Copy stats as text</div></div>
+      </button>
+      <button class="share-action-btn" onclick="shareAction('whatsapp')">
+        <div class="sa-icon" style="background:rgba(37,211,102,.15)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#25d366" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+        </div>
+        <div><div class="sa-label">WhatsApp</div><div class="sa-sub">Share to chat</div></div>
+      </button>
+      <button class="share-action-btn" onclick="shareAction('instagram')">
+        <div class="sa-icon" style="background:rgba(225,48,108,.15)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e1306c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        </div>
+        <div><div class="sa-label">Instagram</div><div class="sa-sub">Save for Stories</div></div>
+      </button>
+      <button class="share-action-btn" onclick="shareAction('download')">
+        <div class="sa-icon" style="background:rgba(59,130,246,.15)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </div>
+        <div><div class="sa-label">Download</div><div class="sa-sub">Save to gallery</div></div>
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ── MC CONFIRM MODAL ── -->
+<div class="mo" id="mc-modal" onclick="if(event.target===this)document.getElementById('mc-modal').classList.remove('open')">
+  <div class="mb">
+    <div class="mh"></div>
+    <div style="text-align:center;margin-bottom:16px">
+      <div style="width:52px;height:52px;border-radius:50%;background:rgba(255,69,96,.12);border:1.5px solid rgba(255,69,96,.35);display:flex;align-items:center;justify-content:center;margin:0 auto 10px">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ff4560" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      </div>
+      <div style="font-family:var(--fh);font-size:1.05rem;font-weight:700;color:var(--danger);margin-bottom:8px">Margin Call</div>
+      <div style="font-size:.75rem;color:var(--muted);line-height:1.7">Ini akan mencatat loss entry sebesar capital saat ini sehingga balance menjadi <strong style="color:var(--danger)">0¢</strong>. Riwayat trade tetap tersimpan.</div>
+    </div>
+    <div style="background:var(--bg3);border-radius:10px;padding:12px 14px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center">
+      <span style="font-size:.68rem;color:var(--muted)">Capital yang akan hilang</span>
+      <span style="font-family:var(--fh);font-size:1.2rem;font-weight:700;color:var(--danger)" id="mc-amount">—</span>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-g" style="flex:1" onclick="document.getElementById('mc-modal').classList.remove('open')">Batal</button>
+      <button style="flex:1;background:var(--danger);color:#fff;font-family:var(--fh);font-weight:700;font-size:.85rem;padding:13px;border:none;border-radius:12px;cursor:pointer" onclick="doMarginCall()">Konfirmasi MC</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── TOP UP MODAL ── -->
+<div class="mo" id="topup-modal" onclick="if(event.target===this)document.getElementById('topup-modal').classList.remove('open')">
+  <div class="mb">
+    <div class="mh"></div>
+    <div style="font-family:var(--fh);font-size:1.05rem;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:8px">
+      <span style="width:32px;height:32px;border-radius:8px;background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.3);display:inline-flex;align-items:center;justify-content:center">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </span>
+      Top Up Capital
+    </div>
+    <div style="font-size:.73rem;color:var(--muted);margin-bottom:14px;line-height:1.7">Tambah dana ke akun. Riwayat trade tetap lanjut — hanya baseline capital yang diperbarui. Modal awal otomatis menyesuaikan.</div>
+    <div style="background:var(--bg3);border-radius:10px;padding:12px 14px;margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+        <span style="font-size:.68rem;color:var(--muted)">Capital saat ini</span>
+        <span style="font-family:var(--fh);font-weight:700;font-size:.9rem;color:var(--accent)" id="topup-current">—</span>
+      </div>
+      <div style="display:flex;justify-content:space-between">
+        <span style="font-size:.68rem;color:var(--muted)">Setelah top up</span>
+        <span style="font-family:var(--fh);font-weight:700;font-size:.9rem;color:var(--accent2)" id="topup-preview">—</span>
+      </div>
+    </div>
+    <div class="fg" style="margin-bottom:14px">
+      <label>Jumlah Top Up (cent)</label>
+      <input type="number" id="topup-amount" placeholder="Contoh: 600" inputmode="decimal" oninput="updateTopUpPreview()">
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-g" style="flex:1" onclick="document.getElementById('topup-modal').classList.remove('open')">Batal</button>
+      <button style="flex:2;background:var(--accent2);color:#fff;font-family:var(--fh);font-weight:700;font-size:.85rem;padding:13px;border:none;border-radius:12px;cursor:pointer" onclick="doTopUp()">Konfirmasi Top Up</button>
+    </div>
+  </div>
+</div>
+
 </div><!-- end app -->
 <div class="toast" id="toast"></div>
 
@@ -1269,7 +1438,13 @@ input.ok{border-color:var(--accent) !important}
     <div class="mh"></div>
     <div class="mt" id="dm-title">—</div>
     <div id="dm-body"></div>
-    <button class="btn btn-g" style="margin-top:12px" onclick="closeMo()">Close</button>
+    <div id="dm-edit-btn-wrap" style="display:none;margin-top:8px">
+      <button class="btn" onclick="editEntry()" style="background:var(--accent2);color:#fff">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        Edit Entry
+      </button>
+    </div>
+    <button class="btn btn-g" style="margin-top:8px" onclick="closeMo()">Close</button>
   </div>
 </div>
 
@@ -1379,9 +1554,20 @@ function renderHome(){
   document.getElementById('h-mdetail').textContent=`${tradedDays} sessions · ${tradingDaysInMonth-tradedDays} days left`;
   document.getElementById('h-mtgt-label').textContent='Target: '+fmtV(monthlyTarget,2);
   document.getElementById('h-tpnl').textContent=(st.tot>=0?'+':'')+fmtV(st.tot,2);
-  document.getElementById('h-mdd').textContent=fmtV(st.mdd,2);
+  // P&L Growth % (replaces Max DD)
+  const pnlPct = config.capital > 0 ? (st.tot / config.capital * 100) : 0;
+  const pnlPctEl = document.getElementById('h-pnlpct');
+  if (pnlPctEl) {
+    pnlPctEl.textContent = (pnlPct>=0?'+':'')+pnlPct.toFixed(1)+'%';
+    pnlPctEl.style.color = pnlPct >= 0 ? 'var(--accent)' : 'var(--danger)';
+  }
   document.getElementById('h-aw').textContent='+'+fmtV(st.aw,2);
   document.getElementById('h-al').textContent=fmtV(st.al,2);
+  // Avg loss % of capital
+  const alPctEl = document.getElementById('h-al-pct');
+  if (alPctEl && st.al !== 0 && st.cur > 0) {
+    alPctEl.textContent = (st.al/st.cur*100).toFixed(2)+'% of capital';
+  }
   drawGrowth();drawPnl();drawStreak();
 }
 function drawGrowth(){
@@ -1505,7 +1691,7 @@ function saveLog(){
   if(!date||isNaN(pnl)){toast('Date and P&L required');return}
   const e={date,pnl,pair:document.getElementById('l-pair').value||'',session:document.getElementById('l-ses').value||'',notes:document.getElementById('l-notes').value||''};
   trades=trades.filter(t=>t.date!==date);trades.push(e);trades.sort((a,b)=>a.date.localeCompare(b.date));
-  S.set('tl_trades',trades);toast('Entry saved ✓');clearLog();renderLogPage();
+  S.set('tl_trades',trades);toast('Entry saved ✓');clearLog();setTimeout(()=>showPage('home'),300);
 }
 function clearLog(){document.getElementById('l-pnl').value='';document.getElementById('l-pair').value='';document.getElementById('l-ses').value='';document.getElementById('l-notes').value='';prefillDate()}
 
@@ -1584,13 +1770,16 @@ function renderBench(){
   setupChartTouch('benchChart');
   const af=ad[ad.length-1],pf2=pd[pd.length-1],diff=af-pf2,ahead=diff>=0;
   const dp=pf2>0?(diff/pf2*100).toFixed(1):'0';
+  const firstDate = trades.length ? trades[0].date : '—';
+  const lastDate  = trades.length ? trades[trades.length-1].date : '—';
+  const startDate = config.capital > 0 ? (trades.length ? trades[0].date : 'Not started') : '—';
   const items=[
-    {l:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg> Projected capital',v:fmtV(pf2,0),c:'var(--accent2)',dot:'#3b82f6'},
-    {l:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><circle cx="12" cy="12" r="9"/><path d="M9 9h1.5a1.5 1.5 0 0 1 0 3H9v3h3"/></svg> Actual capital',v:fmtV(af,0),c:'var(--accent)',dot:'#00e5a0'},
-    {l:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><line x1="12" y1="20" x2="12" y2="4"/><line x1="4" y1="12" x2="20" y2="12"/></svg> Difference',v:(ahead?'+':'')+fmtV(diff,0)+` (${dp}%)`,c:ahead?'var(--accent)':'var(--danger)',dot:ahead?'#00e5a0':'#ff4560'},
-    {l:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg> Status',v:ahead?'AHEAD of target ✓':'BEHIND target !',c:ahead?'var(--accent)':'var(--warn)',dot:ahead?'#00e5a0':'#f59e0b'}
+    {l:'Projected capital',sub:'as of '+lastDate,v:fmtV(pf2,0),c:'var(--accent2)',dot:'#3b82f6'},
+    {l:'Actual capital',sub:'as of '+lastDate,v:fmtV(af,0),c:'var(--accent)',dot:'#00e5a0'},
+    {l:'Difference vs projection',sub:'from '+startDate+' to '+lastDate,v:(ahead?'+':'')+fmtV(diff,0)+' ('+dp+'%)',c:ahead?'var(--accent)':'var(--danger)',dot:ahead?'#00e5a0':'#ff4560'},
+    {l:'Status',sub:'Tracking since '+firstDate,v:ahead?'AHEAD of target ✓':'BEHIND target !',c:ahead?'var(--accent)':'var(--warn)',dot:ahead?'#00e5a0':'#f59e0b'}
   ];
-  let html='';items.forEach(b=>{html+=`<div class="brow2"><div class="bdot" style="background:${b.dot}"></div><div class="binfo"><div class="bl3">${b.l}</div><div class="bv" style="color:${b.c}">${b.v}</div></div></div>`});
+  let html='';items.forEach(b=>{html+=`<div class="brow2"><div class="bdot" style="background:${b.dot}"></div><div class="binfo"><div class="bl3" style="font-size:.67rem;color:var(--muted)">${b.l}</div><div class="bv" style="color:${b.c}">${b.v}</div><div style="font-size:.6rem;color:var(--muted);margin-top:1px">${b.sub}</div></div></div>`});
   document.getElementById('bench-rows').innerHTML=html;
 }
 
@@ -2737,6 +2926,712 @@ window.doWithdraw = function() {
   }
 })();
 
+
+
+// ══════════════════════════════════════════════
+//  FIX 2: LEVEL BADGE IN DASHBOARD
+// ══════════════════════════════════════════════
+function getLevelInfo(cap) {
+  if (!config) return { level: 1, name: 'Starter', next: config?.levelstep || 600 };
+  let level = 1;
+  let threshold = config.capital + config.levelstep;
+  while (cap >= threshold) { level++; threshold += config.levelstep; }
+  const names = ['','Starter','Apprentice','Consistent','Disciplined','Pro Trader','Elite','Master','Legend'];
+  return {
+    level,
+    name: names[Math.min(level, names.length-1)] || ('Level ' + level),
+    curThresh: threshold - config.levelstep,
+    nextThresh: threshold,
+  };
+}
+
+function updateLevelBadge() {
+  if (!config) return;
+  const st = getStats();
+  const info = getLevelInfo(st.cur);
+  const iconEl = document.getElementById('level-icon');
+  const descEl = document.getElementById('level-desc');
+  const nextEl = document.getElementById('level-next');
+  const curCapEl = document.getElementById('level-cur-cap');
+  const nextCapEl = document.getElementById('level-next-cap');
+  const fillEl = document.getElementById('level-prog-fill');
+  if (!iconEl) return;
+
+  // Update icon
+  iconEl.textContent = 'L' + info.level;
+  const lvlCls = 'level-' + Math.min(info.level, 5);
+  iconEl.className = lvlCls;
+  iconEl.style.cssText = `width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:var(--fh);font-weight:800;font-size:.9rem;border:1px solid`;
+
+  const colors = ['','rgba(107,114,128,.12) #888780','rgba(59,130,246,.12) #3b82f6','rgba(0,229,160,.12) #00e5a0','rgba(245,158,11,.12) #f59e0b','rgba(168,85,247,.12) #a855f7'];
+  const [bg, clr] = (colors[Math.min(info.level,5)] || colors[5]).split(' ');
+  iconEl.style.background = bg;
+  iconEl.style.borderColor = clr + '40';
+  iconEl.style.color = clr;
+
+  if (descEl) descEl.textContent = `Level ${info.level} — ${info.name}`;
+
+  const needed = info.nextThresh - st.cur;
+  if (nextEl) nextEl.textContent = needed > 0 ? fmtV(needed, 0) + ' more' : 'Max level';
+
+  const rangeStart = info.curThresh;
+  const rangeEnd = info.nextThresh;
+  const pct = rangeEnd > rangeStart ? Math.min(100, (st.cur - rangeStart) / (rangeEnd - rangeStart) * 100) : 100;
+  if (fillEl) fillEl.style.width = pct + '%';
+  if (curCapEl) curCapEl.textContent = fmtV(info.curThresh, 0);
+  if (nextCapEl) nextCapEl.textContent = fmtV(info.nextThresh, 0);
+}
+
+// Patch renderHome to include level badge
+const _origRenderHome3 = window.renderHome;
+window.renderHome = function() {
+  _origRenderHome3();
+  updateLevelBadge();
+};
+
+// ══════════════════════════════════════════════
+//  FIX 3: SHARE DASHBOARD AS IMAGE SUMMARY
+// ══════════════════════════════════════════════
+
+let _shareIsReport = false;
+let _shareTextContent = '';
+
+function openShareSheet(title) {
+  document.getElementById('share-sheet-title').textContent = title;
+  const src = document.getElementById('preview-canvas');
+  const dst = document.getElementById('share-preview-canvas');
+  const sheetW = Math.min(window.innerWidth - 32, 398);
+  const previewH = Math.round(sheetW * 0.58);
+  dst.style.width = sheetW + 'px';
+  dst.style.height = previewH + 'px';
+  // Use actual canvas dimensions (set by shareSummary/captureReport)
+  const srcW = src.width || 1080;
+  const srcH = src.height || 1920;
+  const cropH = Math.round(srcH * 0.56);
+  dst.width = srcW;
+  dst.height = cropH;
+  const ctx = dst.getContext('2d');
+  ctx.drawImage(src, 0, 0, srcW, cropH, 0, 0, srcW, cropH);
+  // Build copy text
+  if (!_shareIsReport && window.config) {
+    const st = getStats();
+    const pnlPct = config.capital > 0 ? (st.tot/config.capital*100).toFixed(1) : '0';
+    _shareTextContent = `📊 TradeLog Summary\n\nCapital: ${fmtV(st.cur,0)}\nTotal P&L: ${(st.tot>=0?'+':'')+fmtV(st.tot,2)} (${pnlPct}%)\nWin Rate: ${st.wr.toFixed(1)}%\nStreak: ${st.streak} days\n\n#trading #tradelog #forex`;
+  } else if (window.config && trades.length) {
+    const pnl = trades.reduce((s,t)=>s+t.pnl,0);
+    _shareTextContent = `📈 TradeLog Report\n\nAll Time P&L: ${(pnl>=0?'+':'')+fmtV(pnl,2)}\nSessions: ${trades.length}\n\n#trading #tradelog`;
+  }
+  document.getElementById('share-sheet').classList.add('open');
+}
+
+function closeShareSheet() {
+  document.getElementById('share-sheet').classList.remove('open');
+}
+
+async function shareAction(type) {
+  const src = document.getElementById('preview-canvas');
+  haptic('medium');
+  if (type === 'copy') {
+    navigator.clipboard.writeText(_shareTextContent).then(() => {
+      toast('Copied to clipboard ✓');
+      closeShareSheet();
+    }).catch(() => toast('Copy failed'));
+    return;
+  }
+  if (type === 'whatsapp') {
+    const encoded = encodeURIComponent(_shareTextContent);
+    window.open('https://wa.me/?text=' + encoded, '_blank');
+    closeShareSheet();
+    return;
+  }
+  // instagram or download — save image
+  src.toBlob(async blob => {
+    const fname = _shareIsReport ? 'tradelog-report.png' : 'tradelog-summary.png';
+    if (type === 'instagram' && navigator.share) {
+      const file = new File([blob], fname, {type:'image/png'});
+      if (navigator.canShare({files:[file]})) {
+        await navigator.share({files:[file], title:'TradeLog'});
+        closeShareSheet();
+        return;
+      }
+    }
+    // Fallback: download
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = fname; a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    toast(type === 'instagram' ? 'Saved! Open Instagram and select from gallery' : 'Image saved! ✓');
+    closeShareSheet();
+  }, 'image/png');
+}
+
+function sRect(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y);
+  ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y);
+  ctx.closePath(); ctx.fill();
+}
+
+async function shareSummary() {
+  if (!config) { toast('No data to share'); return; }
+  haptic('light');
+  try {
+  const rr=(ctx,x,y,w,h,r)=>{ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();};
+    const st = getStats();
+    const now = new Date();
+    const ms = now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+    const monthPnl = trades.filter(t=>t.date.startsWith(ms)).reduce((s,t)=>s+t.pnl,0);
+    const info = getLevelInfo ? getLevelInfo(st.cur) : {level:1,name:'Starter'};
+    const growPct = config.capital>0 ? ((st.cur-config.capital)/config.capital*100) : 0;
+    const monthlyTarget = st.ctgt * 22;
+    const monthPct = monthlyTarget>0 ? Math.min(100, monthPnl/monthlyTarget*100) : 0;
+    const W=1080, H=1920;
+    const cvs = document.getElementById('preview-canvas');
+    if (!cvs) { toast('Canvas not found'); return; }
+    cvs.width=W; cvs.height=H;
+    const ctx = cvs.getContext('2d');
+    if (!ctx) { toast('Context failed'); return; }
+
+    // Background
+    ctx.fillStyle='#0a0f1a'; ctx.fillRect(0,0,W,H);
+    const g1=ctx.createRadialGradient(W*.85,H*.08,0,W*.85,H*.08,W*.6);
+    g1.addColorStop(0,'rgba(0,229,160,.12)'); g1.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=g1; ctx.fillRect(0,0,W,H);
+    const g2=ctx.createRadialGradient(W*.15,H*.92,0,W*.15,H*.92,W*.5);
+    g2.addColorStop(0,'rgba(59,130,246,.10)'); g2.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=g2; ctx.fillRect(0,0,W,H);
+    // Top accent
+    ctx.fillStyle='#00e5a0'; ctx.fillRect(0,0,W,5);
+
+    // Logo
+    ctx.fillStyle='#00e5a0'; ctx.font='bold 52px sans-serif';
+    ctx.fillText('TradeLog',80,120);
+    ctx.fillStyle='rgba(255,255,255,.4)'; ctx.font='32px monospace';
+    ctx.fillText(now.toLocaleDateString('en-US',{month:'long',year:'numeric'}),80,168);
+
+    // Growth label
+    ctx.fillStyle='rgba(255,255,255,.45)'; ctx.font='36px monospace';
+    ctx.fillText('TOTAL GROWTH',80,290);
+
+    // Big growth number
+    const growStr=(growPct>=0?'+':'')+growPct.toFixed(1)+'%';
+    const growColor = growPct>=0 ? '#00e5a0' : '#ff4560';
+    const fsize = growStr.length>7 ? 150 : 180;
+    ctx.fillStyle=growColor;
+    ctx.font='bold '+fsize+'px sans-serif';
+    ctx.fillText(growStr,80,460);
+
+    // Divider
+    ctx.fillStyle='rgba(255,255,255,.08)'; ctx.fillRect(80,510,W-160,1);
+
+    // Draw stat box helper (arrow fn)
+    const drawBox = (x,y,w,h,label,val,color,sub) => {
+      ctx.fillStyle='rgba(255,255,255,.05)';
+      ctx.beginPath(); rr(ctx,x,y,w,h,18); ctx.fill();
+      ctx.fillStyle='rgba(255,255,255,.4)'; ctx.font='26px monospace';
+      ctx.fillText(label.toUpperCase(),x+20,y+40);
+      ctx.fillStyle=color; ctx.font='bold 50px sans-serif';
+      ctx.fillText(val,x+20,y+104);
+      if(sub){ctx.fillStyle='rgba(255,255,255,.3)';ctx.font='22px monospace';ctx.fillText(sub,x+20,y+136);}
+    };
+    const bw=(W-200)/2, bx1=80, bx2=80+bw+40;
+    drawBox(bx1,545,bw,165,'Capital',fmtV(st.cur,0),'#00e5a0');
+    drawBox(bx2,545,bw,165,'Total P&L',(st.tot>=0?'+':'')+fmtV(st.tot,2),st.tot>=0?'#00e5a0':'#ff4560');
+    drawBox(bx1,730,bw,165,'Win Rate',st.wr.toFixed(1)+'%','#3b82f6',st.wins+'W / '+st.loss+'L');
+    drawBox(bx2,730,bw,165,'Streak',st.streak+' days','#f59e0b');
+
+    // Monthly target bar
+    const bY=925;
+    ctx.fillStyle='rgba(255,255,255,.04)';
+    ctx.beginPath(); rr(ctx,80,bY,W-160,130,18); ctx.fill();
+    ctx.fillStyle='rgba(255,255,255,.4)'; ctx.font='26px monospace';
+    ctx.fillText('MONTHLY TARGET',100,bY+40);
+    ctx.fillStyle='#f59e0b'; ctx.font='bold 40px sans-serif';
+    ctx.fillText(fmtV(monthPnl,2)+' / '+fmtV(monthlyTarget,0),100,bY+88);
+    ctx.fillStyle='rgba(255,255,255,.1)';
+    ctx.beginPath(); rr(ctx,100,bY+102,W-200,10,5); ctx.fill();
+    if(monthPct>0){
+      ctx.fillStyle='#00e5a0';
+      ctx.beginPath(); rr(ctx,100,bY+102,Math.max(10,(W-200)*monthPct/100),10,5); ctx.fill();
+    }
+
+    // Equity curve
+    const eY=1095, eH=275;
+    ctx.fillStyle='rgba(255,255,255,.03)';
+    ctx.beginPath(); rr(ctx,80,eY,W-160,eH,18); ctx.fill();
+    ctx.fillStyle='rgba(255,255,255,.4)'; ctx.font='26px monospace';
+    ctx.fillText('EQUITY CURVE',100,eY+40);
+    if(trades.length>1){
+      const caps=[config.capital]; let cc=config.capital;
+      trades.forEach(t=>{cc+=t.pnl;caps.push(cc);});
+      const minC=Math.min(...caps), maxC=Math.max(...caps), rng=maxC-minC||1;
+      const cw=W-200, ch=eH-70, cx0=100, cy0=eY+55;
+      ctx.beginPath();
+      caps.forEach((v,k)=>{
+        const x=cx0+(k/(caps.length-1))*cw;
+        const y=cy0+ch-((v-minC)/rng)*ch;
+        k===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+      });
+      ctx.lineTo(cx0+cw,cy0+ch); ctx.lineTo(cx0,cy0+ch); ctx.closePath();
+      const fg=ctx.createLinearGradient(0,cy0,0,cy0+ch);
+      fg.addColorStop(0,'rgba(0,229,160,.25)'); fg.addColorStop(1,'rgba(0,229,160,.02)');
+      ctx.fillStyle=fg; ctx.fill();
+      ctx.beginPath(); ctx.strokeStyle='#00e5a0'; ctx.lineWidth=4;
+      caps.forEach((v,k)=>{
+        const x=cx0+(k/(caps.length-1))*cw;
+        const y=cy0+ch-((v-minC)/rng)*ch;
+        k===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+      });
+      ctx.stroke(); ctx.lineWidth=1;
+    }
+
+    // Bottom stat row
+    const sr=[
+      {l:'Level',v:'L'+info.level},
+      {l:'Max DD',v:fmtV(st.mdd,2)},
+      {l:'Avg Win',v:'+'+fmtV(st.aw,2)},
+      {l:'Sessions',v:String(trades.length)}
+    ];
+    const sY=1415, sW=(W-160-30)/4;
+    sr.forEach((s2,k)=>{
+      const x=80+k*(sW+10);
+      ctx.fillStyle='rgba(255,255,255,.04)';
+      ctx.beginPath(); rr(ctx,x,sY,sW,110,12); ctx.fill();
+      ctx.fillStyle='rgba(255,255,255,.35)'; ctx.font='22px monospace';
+      ctx.fillText(s2.l,x+12,sY+30);
+      ctx.fillStyle='#e8eaf0'; ctx.font='bold 34px sans-serif';
+      ctx.fillText(s2.v,x+12,sY+76);
+    });
+
+    // Footer
+    ctx.fillStyle='rgba(255,255,255,.08)'; ctx.fillRect(80,H-215,W-160,1);
+    ctx.fillStyle='rgba(255,255,255,.3)'; ctx.font='28px monospace';
+    ctx.fillText('#trading #tradelog #forex',80,H-168);
+    ctx.fillStyle='rgba(255,255,255,.15)'; ctx.font='24px monospace';
+    ctx.fillText(trades.length+' sessions · '+now.toLocaleDateString('en-US',{dateStyle:'medium'}),80,H-118);
+    ctx.fillStyle='#00e5a0'; ctx.fillRect(0,H-5,W,5);
+
+    _shareIsReport = false;
+    openShareSheet('Share Summary');
+  } catch(err) {
+    console.error('shareSummary error:', err);
+    toast('Error: '+String(err));
+  }
+}
+
+async function captureReport() {
+  if (!config || !trades.length) { toast('No data to share'); return; }
+  haptic('light');
+  try {
+    // ── All time data ──────────────────────────
+    const fl = [...trades];
+    const pnl = fl.reduce((s,t)=>s+t.pnl,0);
+    const wins = fl.filter(t=>t.pnl>0).length;
+    const loss2 = fl.filter(t=>t.pnl<0).length;
+    const flat2 = fl.length - wins - loss2;
+    const wr = fl.length ? (wins/fl.length*100).toFixed(1) : '0';
+    const best = Math.max(...fl.map(t=>t.pnl));
+    const worst = Math.min(...fl.map(t=>t.pnl));
+    const avgW = wins ? fl.filter(t=>t.pnl>0).reduce((s,t)=>s+t.pnl,0)/wins : 0;
+    const avgL = loss2 ? fl.filter(t=>t.pnl<0).reduce((s,t)=>s+t.pnl,0)/loss2 : 0;
+    const pf = avgL !== 0 ? Math.abs(avgW/avgL).toFixed(2) : '∞';
+    const growPct = config.capital > 0 ? ((config.capital+pnl-config.capital)/config.capital*100).toFixed(2) : '0';
+    const capEnd = config.capital + pnl;
+    const sd = fl[0].date, ed = fl[fl.length-1].date;
+
+    // ── Canvas setup 9:16 ──────────────────────
+    const W = 1080, H = 1920;
+    const cvs = document.getElementById('preview-canvas');
+    if (!cvs) { toast('Canvas not found'); return; }
+    cvs.width = W; cvs.height = H;
+    const ctx = cvs.getContext('2d');
+    if (!ctx) { toast('Context failed'); return; }
+
+    // ── Helpers ────────────────────────────────
+    const rr = (x,y,w,h,r) => {
+      ctx.beginPath();
+      ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y);
+      ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+      ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+      ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+      ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y);
+      ctx.closePath();
+    };
+    const fillRR = (x,y,w,h,r,color) => { ctx.fillStyle=color; rr(x,y,w,h,r); ctx.fill(); };
+    const txt = (t,x,y,color,font) => { ctx.fillStyle=color; ctx.font=font; ctx.fillText(t,x,y); };
+
+    // ── Background ─────────────────────────────
+    ctx.fillStyle = '#0d0e13'; ctx.fillRect(0,0,W,H);
+
+    // ── Header bar ─────────────────────────────
+    const PAD = 60;
+    fillRR(PAD, 60, W-PAD*2, 100, 16, '#1a1c24');
+    // doc icon
+    ctx.fillStyle='#6b7280'; ctx.font='bold 44px sans-serif'; ctx.fillText('📄',PAD+24,128);
+    txt('All Time', W/2, 124, '#e8eaf0', 'bold 46px sans-serif');
+    ctx.textAlign='right';
+    txt(fl.length+' sessions', W-PAD-24, 118, '#6b7280', '32px monospace');
+    ctx.textAlign='left';
+
+    // ── Row list card ──────────────────────────
+    const rows = [
+      { icon:'📄', label:'Period',        val:'All Time',                                color:'#e8eaf0' },
+      { icon:'#',  label:'Sessions',      val:String(fl.length),                         color:'#e8eaf0' },
+      { icon:'○',  label:'Total P&L',     val:(pnl>=0?'+':'')+fmtV(pnl,2),              color:pnl>=0?'#00e5a0':'#ff4560' },
+      { icon:'⊡',  label:'Capital start', val:fmtV(config.capital,0),                   color:'#e8eaf0' },
+      { icon:'◈',  label:'Capital end',   val:fmtV(capEnd,0),                            color:'#e8eaf0' },
+      { icon:'↗',  label:'Growth',        val:(growPct>=0?'+':'')+growPct+'%',           color:parseFloat(growPct)>=0?'#00e5a0':'#ff4560' },
+      { icon:'✓',  label:'W/L/Flat',      val:wins+'/'+loss2+'/'+flat2,                  color:'#e8eaf0' },
+      { icon:'◎',  label:'Win rate',      val:wr+'%',                                    color:'#e8eaf0' },
+      { icon:'←',  label:'Profit factor', val:pf,                                        color:'#e8eaf0' },
+      { icon:'✓',  label:'Avg win',       val:'+'+fmtV(avgW,2),                          color:'#00e5a0' },
+      { icon:'✕',  label:'Avg loss',      val:fmtV(avgL,2),                              color:'#ff4560' },
+      { icon:'☆',  label:'Best day',      val:'+'+fmtV(best,2),                          color:'#00e5a0' },
+      { icon:'☆',  label:'Worst day',     val:fmtV(worst,2),                             color:'#ff4560' },
+    ];
+
+    const cardX=PAD, cardY=190, cardW=W-PAD*2;
+    const rowH=80, rowPad=24;
+    const cardH=rows.length*rowH+rowPad*2;
+    fillRR(cardX, cardY, cardW, cardH, 20, '#1a1c24');
+
+    rows.forEach((row, k) => {
+      const y = cardY + rowPad + k*rowH;
+      // separator
+      if (k > 0) {
+        ctx.fillStyle='rgba(255,255,255,.06)';
+        ctx.fillRect(cardX+rowPad, y, cardW-rowPad*2, 1);
+      }
+      // icon
+      ctx.fillStyle='#6b7280'; ctx.font='30px sans-serif';
+      ctx.fillText(row.icon, cardX+rowPad, y+52);
+      // label
+      ctx.fillStyle='#9ca3af'; ctx.font='34px monospace';
+      ctx.fillText(row.label, cardX+rowPad+60, y+52);
+      // value right aligned
+      ctx.textAlign='right';
+      ctx.fillStyle=row.color; ctx.font='34px monospace';
+      ctx.fillText(row.val, cardX+cardW-rowPad, y+52);
+      ctx.textAlign='left';
+    });
+
+    // ── Benchmark section header ───────────────
+    const benchTitleY = cardY + cardH + 60;
+    ctx.fillStyle='#6b7280'; ctx.font='28px sans-serif';
+    ctx.fillText('🏆', PAD, benchTitleY+32);
+    ctx.fillStyle='#9ca3af'; ctx.font='bold 30px monospace';
+    ctx.fillText('BENCHMARK — ACTUAL VS PROJECTED', PAD+52, benchTitleY+32);
+
+    // ── Benchmark chart card ───────────────────
+    const chartCardY = benchTitleY + 56;
+    const chartCardH = H - chartCardY - PAD - 60;
+    fillRR(cardX, chartCardY, cardW, chartCardH, 20, '#1a1c24');
+
+    // Chart legend top right
+    const legY = chartCardY + 40;
+    ctx.fillStyle='rgba(59,130,246,.7)'; ctx.fillRect(cardX+cardW-320, legY+8, 28, 3);
+    ctx.fillStyle='#6b7280'; ctx.font='28px monospace';
+    ctx.fillText('— PROJECTED', cardX+cardW-288, legY+20);
+    ctx.fillStyle='#00e5a0'; ctx.fillRect(cardX+cardW-320, legY+46, 28, 3);
+    ctx.fillText('— ACTUAL', cardX+cardW-288, legY+58);
+
+    // Chart sub-header
+    ctx.fillStyle='#6b7280'; ctx.font='24px monospace';
+    ctx.fillText('ALL-TIME CAPITAL COMPARISON', cardX+rowPad, chartCardY+40);
+
+    // Compute projected & actual series
+    const capData = [config.capital];
+    let ccc = config.capital;
+    fl.forEach(t => { ccc += t.pnl; capData.push(Math.round(ccc)); });
+
+    let pc2=config.capital, pt2=config.target, pnt2=config.capital+config.levelstep;
+    const prData = [config.capital];
+    for (let d=0; d<fl.length; d++) {
+      pc2 += pt2;
+      if (pc2 >= pnt2) { pt2=Math.round(pt2*(1+config.levelinc/100)); pnt2+=config.levelstep; }
+      prData.push(Math.round(pc2));
+    }
+
+    const allV = [...capData, ...prData];
+    const minV = Math.min(...allV), maxV = Math.max(...allV), rng = maxV-minV || 1;
+
+    // Chart area
+    const cxPad=rowPad+80, cyTop=chartCardY+120, cyBot=chartCardY+chartCardH-100;
+    const cW=cardW-cxPad*2, cH=cyBot-cyTop;
+    const cx0=cardX+cxPad;
+
+    // Y axis labels
+    const ySteps=5;
+    for(let s=0;s<=ySteps;s++){
+      const v=minV+rng*(s/ySteps);
+      const y=cyBot-cH*(s/ySteps);
+      ctx.fillStyle='rgba(255,255,255,.25)'; ctx.fillRect(cx0,y,cW,1);
+      ctx.fillStyle='#6b7280'; ctx.font='26px monospace'; ctx.textAlign='right';
+      ctx.fillText(fmtV(v,0), cx0-16, y+10);
+      ctx.textAlign='left';
+    }
+
+    // Draw projected line (dashed)
+    ctx.save();
+    ctx.strokeStyle='rgba(59,130,246,.6)'; ctx.lineWidth=4;
+    ctx.setLineDash([24,14]);
+    ctx.beginPath();
+    prData.forEach((v,k)=>{
+      const x=cx0+(k/(prData.length-1))*cW;
+      const y=cyBot-((v-minV)/rng)*cH;
+      k===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    });
+    ctx.stroke();
+    ctx.setLineDash([]); ctx.restore();
+
+    // Draw actual line with fill
+    ctx.save();
+    ctx.beginPath();
+    capData.forEach((v,k)=>{
+      const x=cx0+(k/(capData.length-1))*cW;
+      const y=cyBot-((v-minV)/rng)*cH;
+      k===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    });
+    ctx.lineTo(cx0+cW, cyBot); ctx.lineTo(cx0, cyBot); ctx.closePath();
+    const fg=ctx.createLinearGradient(0,cyTop,0,cyBot);
+    fg.addColorStop(0,'rgba(0,229,160,.25)'); fg.addColorStop(1,'rgba(0,229,160,.02)');
+    ctx.fillStyle=fg; ctx.fill();
+    ctx.beginPath();
+    capData.forEach((v,k)=>{
+      const x=cx0+(k/(capData.length-1))*cW;
+      const y=cyBot-((v-minV)/rng)*cH;
+      k===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    });
+    ctx.strokeStyle='#00e5a0'; ctx.lineWidth=5; ctx.stroke(); ctx.restore();
+
+    // ── Footer ─────────────────────────────────
+    ctx.fillStyle='rgba(255,255,255,.15)'; ctx.font='26px monospace';
+    ctx.fillText('Generated by TradeLog · '+sd+' → '+ed, PAD, H-30);
+
+    // ── Open share sheet ───────────────────────
+    _shareIsReport = true;
+    openShareSheet('Share Report');
+
+  } catch(err) {
+    console.error('captureReport error:', err);
+    toast('Error: '+String(err));
+  }
+}
+
+
+
+
+
+
+
+
+
+
+let _shareCanvasBlob = null;
+
+function closeSharePreview() {
+  document.getElementById('share-preview-overlay').classList.remove('open');
+}
+
+async function doShareImage() {
+  const canvas = document.getElementById('preview-canvas');
+  canvas.toBlob(async blob => {
+    const title = document.getElementById('share-preview-title').textContent;
+    const fname = title.includes('Report') ? 'tradelog-report.png' : 'tradelog-summary.png';
+    const file = new File([blob], fname, {type:'image/png'});
+    if (navigator.share && navigator.canShare({files:[file]})) {
+      await navigator.share({ files:[file], title:'TradeLog', text:title });
+    } else {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = fname; a.click();
+      setTimeout(()=>URL.revokeObjectURL(url), 1000);
+      toast('Image saved! ✓');
+    }
+    haptic('success');
+    closeSharePreview();
+  }, 'image/png');
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x+r, y);
+  ctx.lineTo(x+w-r, y);
+  ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+  ctx.lineTo(x+w, y+h-r);
+  ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+  ctx.lineTo(x+r, y+h);
+  ctx.quadraticCurveTo(x, y+h, x, y+h-r);
+  ctx.lineTo(x, y+r);
+  ctx.quadraticCurveTo(x, y, x+r, y);
+  ctx.closePath();
+  ctx.fill();
+}
+
+
+// ══════════════════════════════════════════════
+//  FIX 7: EDIT ENTRY FROM JOURNAL MODAL
+// ══════════════════════════════════════════════
+let _editingDate = null;
+const _origOpenMo = window.openMo;
+window.openMo = function(ds) {
+  _editingDate = ds;
+  _origOpenMo(ds);
+  // Show edit button only if there's an entry
+  const t = trades.find(x => x.date === ds);
+  const wrap = document.getElementById('dm-edit-btn-wrap');
+  if (wrap) wrap.style.display = t ? 'block' : 'none';
+};
+
+function editEntry() {
+  if (!_editingDate) return;
+  const t = trades.find(x => x.date === _editingDate);
+  if (!t) return;
+  closeMo();
+  showPage('log');
+  // Pre-fill form
+  setTimeout(() => {
+    const d = document.getElementById('l-date');
+    const p = document.getElementById('l-pnl');
+    const pa = document.getElementById('l-pair');
+    const s = document.getElementById('l-ses');
+    const n = document.getElementById('l-notes');
+    if (d) d.value = t.date;
+    if (p) p.value = t.pnl;
+    if (pa) pa.value = t.pair || '';
+    if (s) s.value = t.session || '';
+    if (n) n.value = t.notes || '';
+    toast('Editing entry for ' + t.date);
+  }, 200);
+}
+
+// ══════════════════════════════════════════════
+//  FIX 1: SCROLL PATCH - remove swipe conflicts
+// ══════════════════════════════════════════════
+// Override the swipe init to be less aggressive (require longer swipe)
+(function fixScroll() {
+  // Safe swipe detection — no cloning, just add listener directly
+  let sx2=0, sy2=0, st3=0;
+  document.getElementById('scroll')?.addEventListener('touchstart', e => {
+    sx2 = e.touches[0].clientX;
+    sy2 = e.touches[0].clientY;
+    st3 = Date.now();
+  }, {passive: true});
+  document.getElementById('scroll')?.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - sx2;
+    const dy = e.changedTouches[0].clientY - sy2;
+    const dt = Date.now() - st3;
+    if (Math.abs(dx) > 80 && Math.abs(dx) > Math.abs(dy) * 3 && dt < 300) {
+      const pages = ['home','calendar','strategy','reports','settings'];
+      const cur = pages.indexOf(activePage);
+      if (dx < 0 && cur < pages.length-1) { showPage(pages[cur+1]); haptic('light'); }
+      else if (dx > 0 && cur > 0) { showPage(pages[cur-1]); haptic('light'); }
+    }
+  }, {passive: true});
+})();
+
+// ══════════════════════════════════════════════
+//  FIX 4: FAB - hide when on log page
+// ══════════════════════════════════════════════
+const _origShowPageFab = window.showPage;
+window.showPage = function(name) {
+  _origShowPageFab(name);
+  const fab = document.getElementById('fab-log');
+  if (fab) fab.style.display = name === 'log' ? 'none' : 'flex';
+  // Update reports nav
+  const navReports = document.getElementById('nav-reports');
+  if (navReports) navReports.classList.toggle('active', name === 'reports');
+};
+
+
+
+// ══════════════════════════════════════════════
+//  SHARE SHEET (Finansialku-style)
+// ══════════════════════════════════════════════
+
+
+// ══════════════════════════════════════════════
+//  MARGIN CALL + TOP UP CAPITAL
+// ══════════════════════════════════════════════
+
+function showMCConfirm() {
+  if (!config) { toast('Setup belum selesai'); return; }
+  const st = getStats();
+  if (st.cur <= 0) { toast('Capital sudah 0'); return; }
+  document.getElementById('mc-amount').textContent = fmtV(st.cur, 2);
+  document.getElementById('mc-modal').classList.add('open');
+  haptic('light');
+}
+
+function doMarginCall() {
+  if (!config) return;
+  const st = getStats();
+  if (st.cur <= 0) {
+    document.getElementById('mc-modal').classList.remove('open');
+    toast('Capital sudah 0'); return;
+  }
+  const today = new Date().toISOString().split('T')[0];
+  const mcEntry = { date:today, pnl:-st.cur, pair:'MC', session:'', notes:'Margin Call — capital reset ke 0' };
+  trades = trades.filter(t => t.date !== today);
+  trades.push(mcEntry);
+  trades.sort((a,b) => a.date.localeCompare(b.date));
+  S.set('tl_trades', trades);
+  S.set(getAcctKey('trades'), trades);
+  document.getElementById('mc-modal').classList.remove('open');
+  haptic('error');
+  toast('⚠️ Margin Call dicatat. Capital = 0');
+  setTimeout(() => showPage('home'), 300);
+}
+
+function showTopUp() {
+  if (!config) { toast('Setup belum selesai'); return; }
+  const st = getStats();
+  document.getElementById('topup-current').textContent = fmtV(st.cur, 0);
+  document.getElementById('topup-preview').textContent = '—';
+  document.getElementById('topup-amount').value = '';
+  document.getElementById('topup-modal').classList.add('open');
+  haptic('light');
+}
+
+function updateTopUpPreview() {
+  if (!config) return;
+  const st = getStats();
+  const amt = parseFloat(document.getElementById('topup-amount').value) || 0;
+  const el = document.getElementById('topup-preview');
+  if (el) el.textContent = amt > 0 ? fmtV(st.cur + amt, 0) : '—';
+}
+
+function doTopUp() {
+  if (!config) return;
+  const amt = parseFloat(document.getElementById('topup-amount').value);
+  if (!amt || amt <= 0) { toast('Masukkan jumlah yang valid'); return; }
+  // new config.capital = old config.capital + topup
+  // effective capital = config.capital + sum(trades) stays = old_effective + amt
+  config.capital = config.capital + amt;
+  S.set('tl_config', config);
+  S.set(getAcctKey('config'), config);
+  document.getElementById('topup-modal').classList.remove('open');
+  haptic('success');
+  toast('✓ Top Up ' + fmtV(amt, 0) + ' berhasil!');
+  setTimeout(() => showPage('home'), 300);
+}
+
+// ══ Fix: reset scroll to top on page change ══
+(function patchScrollReset() {
+  const _origSP = window.showPage;
+  window.showPage = function(name) {
+    _origSP(name);
+    const scroll = document.getElementById('scroll');
+    if (scroll) scroll.scrollTop = 0;
+  };
+})();
+
 </script>
+
+<!-- Hidden rendering canvas for share -->
+<canvas id="preview-canvas" style="position:fixed;left:-99999px;top:-99999px;opacity:0;pointer-events:none"></canvas>
 </body>
 </html>
